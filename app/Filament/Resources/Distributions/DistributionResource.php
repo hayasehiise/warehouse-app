@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Distributions;
 use App\Filament\Resources\Distributions\Pages\CreateDistribution;
 use App\Filament\Resources\Distributions\Pages\ListDistributions;
 use App\Filament\Resources\Distributions\Pages\ViewDistribution;
+use App\Filament\Resources\Distributions\RelationManagers\DistributionItemsRelationManager;
 use App\Filament\Resources\Distributions\Schemas\DistributionForm;
 use App\Filament\Resources\Distributions\Schemas\DistributionInfolist;
 use App\Filament\Resources\Distributions\Tables\DistributionsTable;
@@ -51,7 +52,7 @@ class DistributionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DistributionItemsRelationManager::class,
         ];
     }
 

@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\Distributions\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -39,19 +42,33 @@ class DistributionsTable
                     ->badge()
                     ->label('Status')
                     ->sortable()
-                    ->formatStateUsing(fn (string $state) => ucfirst($state))
-                    ->colors([
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'pending' => 'Tertunda',
+                        'approved' => 'Disetujui',
+                        'rejected' => 'Ditolak',
+                    })
+                    ->color(fn ($state) => match ($state) {
                         'pending' => 'warning',
                         'approved' => 'success',
                         'rejected' => 'danger',
-                    ]),
+                    }),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make()
+                        ->visible(fn ($record) => ! $record->trashed()),
+                    DeleteAction::make()
+                        ->visible(fn ($record) => (in_array($record->approve_status, ['pending', 'rejected']) || auth()->user()->hasAnyRole(['admin', 'supervisor'])) && ! $record->trashed()),
+                    RestoreAction::make()
+                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor'])),
+                    ForceDeleteAction::make()
+                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor'])),
+                ])
+                    ->icon('lucide-ellipsis-vertical')
+                    ->tooltip('Tindakan'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Observers\DistributionObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy([DistributionObserver::class])]
 #[Fillable([
     'public_id',
     'distribution_code',
@@ -53,6 +56,6 @@ class Distribution extends Model
 
     public function distributionItems(): HasMany
     {
-        return $this->hasMany(DistributionItem::class);
+        return $this->hasMany(DistributionItems::class);
     }
 }
