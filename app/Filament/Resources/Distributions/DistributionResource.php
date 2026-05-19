@@ -31,6 +31,8 @@ class DistributionResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Pengeluaran Barang';
 
+    protected static ?int $navigationSort = 4;
+
     public static function form(Schema $schema): Schema
     {
         return DistributionForm::configure($schema);

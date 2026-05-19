@@ -8,7 +8,6 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -36,15 +35,11 @@ class DistributionsTable
                     ->label('Catatan')
                     ->searchable()
                     ->sortable(),
-                BadgeColumn::make('approve_status')
+                TextColumn::make('approve_status')
+                    ->badge()
                     ->label('Status')
-                    ->searchable()
                     ->sortable()
-                    ->enum([
-                        'pending' => 'Pending',
-                        'approved' => 'Approved',
-                        'rejected' => 'Rejected',
-                    ])
+                    ->formatStateUsing(fn (string $state) => ucfirst($state))
                     ->colors([
                         'pending' => 'warning',
                         'approved' => 'success',
