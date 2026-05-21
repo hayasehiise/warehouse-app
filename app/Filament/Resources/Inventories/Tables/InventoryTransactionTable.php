@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Inventories\Tables;
 
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
@@ -14,16 +15,17 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Livewire\Component;
 
 class InventoryTransactionTable
 {
-    public static function configure(Table $table): Table
+    public static function configure(Table $table, Component $livewire): Table
     {
         return $table
             ->headerActions([
                 CreateAction::make()
-                    ->after(function () {
-                        $this->dispatch('refreshView');
+                    ->after(function () use ($livewire) {
+                        $livewire->dispatch('refreshView');
                     }),
             ])
             ->columns([
@@ -34,14 +36,49 @@ class InventoryTransactionTable
                 TextColumn::make('type')
                     ->label('Tipe Transaksi')
                     ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'IN' => 'Masuk',
+                        'OUT' => 'Keluar',
+                        default => $state,
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'IN' => 'success',
+                            'OUT' => 'danger',
+                            default => 'gray',
+                        };
+                    })
                     ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'GOOD' => 'Baik',
+                        'DAMAGED' => 'Rusak',
+                        'EXPIRED' => 'Kadaluarsa',
+                        'MISSING' => 'Hilang',
+                        default => $state,
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'GOOD' => 'success',
+                            'DAMAGED' => 'danger',
+                            'EXPIRED' => 'danger',
+                            'MISSING' => 'danger',
+                            default => 'gray',
+                        };
+                    })
                     ->sortable(),
                 TextColumn::make('quantity')
                     ->label('Quantity')
                     ->badge()
+                    ->color(function ($state, $record) {
+                        return match ($record->type) {
+                            'IN' => 'success',
+                            'OUT' => 'danger',
+                            default => 'gray',
+                        };
+                    })
                     ->sortable(),
                 TextColumn::make('createdBy.name')
                     ->label('Dibuat Oleh')
@@ -49,9 +86,24 @@ class InventoryTransactionTable
                 TextColumn::make('approve_status')
                     ->label('Status Approval')
                     ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'PENDING' => 'Menunggu Approval',
+                        'REJECTED' => 'Ditolak',
+                        'APPROVED' => 'Disetujui',
+                        default => $state,
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'PENDING' => 'warning',
+                            'REJECTED' => 'danger',
+                            'APPROVED' => 'success',
+                            default => 'gray',
+                        };
+                    })
                     ->sortable(),
                 TextColumn::make('approvedBy.name')
                     ->label('Disetujui Oleh')
+                    ->default('Menunggu Approval')
                     ->sortable(),
                 TextColumn::make('approved_note')
                     ->label('Catatan Approval')
@@ -125,58 +177,60 @@ class InventoryTransactionTable
                     }),
             ])
             ->recordActions([
-                Action::make('approve')
-                    ->label('Approve')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->visible(fn ($record) => $record->approve_status === 'PENDING' && auth()->user()->hasAnyRole(['admin', 'supervisor']))
-                    ->form([
-                        TextArea::make('approved_note')
-                            ->label('Catatan Approval')
-                            ->rows(2)
-                            ->required(),
-                    ])
-                    ->action(function ($record, $data) {
-                        $record->approve_status = 'APPROVED';
-                        $record->approved_by = auth()->id();
-                        $record->approved_note = $data['approved_note'];
-                        $record->save();
-                    })
-                    ->after(fn () => $this->dispatch('refreshView')),
-                Action::make('reject')
-                    ->label('Reject')
-                    ->icon('heroicon-o-x-circle')
-                    ->color('danger')
-                    ->visible(fn ($record) => $record->approve_status === 'PENDING' && auth()->user()->hasAnyRole(['admin', 'supervisor']))
-                    ->form([
-                        TextArea::make('approved_note')
-                            ->label('Catatan Penolakan')
-                            ->rows(2)
-                            ->required(),
-                    ])
-                    ->action(function ($record, $data) {
-                        $record->approve_status = 'REJECTED';
-                        $record->approved_by = auth()->id();
-                        $record->approved_note = $data['approved_note'];
-                        $record->save();
-                    })
-                    ->after(fn () => $this->dispatch('refreshView')),
-                Action::make('delete')
-                    ->requiresConfirmation()
-                    ->visible(fn ($record) => auth()->user()->hasAnyRole(['admin', 'supervisor']) || (auth()->user()->hasRole('staff') && $record->approve_status === 'PENDING'))
-                    ->action(fn ($record) => $record->delete())
-                    ->color('danger')
-                    ->icon('lucide-trash')
-                    ->after(fn () => $this->dispatch('refreshView')),
-                RestoreAction::make()
-                    ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
-                    ->color('success')
-                    ->icon('lucide-rotate-ccw')
-                    ->after(fn () => $this->dispatch('refreshView')),
-                ForceDeleteAction::make()
-                    ->requiresConfirmation()
-                    ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
-                    ->after(fn () => $this->dispatch('refreshView')),
+                ActionGroup::make([
+                    Action::make('approve')
+                        ->label('Approve')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->visible(fn ($record) => $record->approve_status === 'PENDING' && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                        ->form([
+                            TextArea::make('approved_note')
+                                ->label('Catatan Approval')
+                                ->rows(2)
+                                ->required(),
+                        ])
+                        ->action(function ($record, $data) {
+                            $record->approve_status = 'APPROVED';
+                            $record->approved_by = auth()->id();
+                            $record->approved_note = $data['approved_note'];
+                            $record->save();
+                        })
+                        ->after(fn () => $livewire->dispatch('refreshView')),
+                    Action::make('reject')
+                        ->label('Reject')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->visible(fn ($record) => $record->approve_status === 'PENDING' && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                        ->form([
+                            TextArea::make('approved_note')
+                                ->label('Catatan Penolakan')
+                                ->rows(2)
+                                ->required(),
+                        ])
+                        ->action(function ($record, $data) {
+                            $record->approve_status = 'REJECTED';
+                            $record->approved_by = auth()->id();
+                            $record->approved_note = $data['approved_note'];
+                            $record->save();
+                        })
+                        ->after(fn () => $livewire->dispatch('refreshView')),
+                    Action::make('delete')
+                        ->requiresConfirmation()
+                        ->visible(fn ($record) => auth()->user()->hasAnyRole(['admin', 'supervisor']) || (auth()->user()->hasRole('staff') && $record->approve_status === 'PENDING'))
+                        ->action(fn ($record) => $record->delete())
+                        ->color('danger')
+                        ->icon('lucide-trash')
+                        ->after(fn () => $livewire->dispatch('refreshView')),
+                    RestoreAction::make()
+                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                        ->color('success')
+                        ->icon('lucide-rotate-ccw')
+                        ->after(fn () => $livewire->dispatch('refreshView')),
+                    ForceDeleteAction::make()
+                        ->requiresConfirmation()
+                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                        ->after(fn () => $livewire->dispatch('refreshView')),
+                ]),
             ]);
     }
 }

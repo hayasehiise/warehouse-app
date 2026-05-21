@@ -24,6 +24,6 @@ class InventoryTransactionsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return InventoryTransactionTable::configure($table);
+        return InventoryTransactionTable::configure($table, $this);
     }
 }

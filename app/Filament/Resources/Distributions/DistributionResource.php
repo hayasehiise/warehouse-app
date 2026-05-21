@@ -13,7 +13,6 @@ use App\Models\Distribution;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,7 +21,7 @@ class DistributionResource extends Resource
 {
     protected static ?string $model = Distribution::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'lucide-hand-helping';
 
     protected static ?string $recordTitleAttribute = 'distribution_code';
 
