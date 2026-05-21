@@ -56,4 +56,9 @@ class Item extends Model
     {
         return $this->hasMany(InventoryTransaction::class);
     }
+
+    public function distributionItems(): HasMany
+    {
+        return $this->hasMany(DistributionItems::class);
+    }
 }

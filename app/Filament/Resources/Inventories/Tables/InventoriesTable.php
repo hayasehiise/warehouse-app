@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Inventories\Tables;
 
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -60,6 +62,13 @@ class InventoriesTable
                         return 'success';
                     })
                     ->sortable(),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                Action::make('distribution')
+                    ->label('Distribusi')
+                    ->icon('lucide-arrow-up-right')
+                    ->url(fn ($record) => route('filament.admin.resources.inventories.distribution', $record)),
             ]);
     }
 }
