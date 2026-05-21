@@ -24,7 +24,7 @@ class ViewDistribution extends ViewRecord
                     ->label('Approve')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn ($record) => in_array($record->approve_status, ['pending', 'rejected']) && auth()->user()->hasAnyRole(['admin', 'supervisor']) && ! $record->trashed())
+                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && auth()->user()->hasAnyRole(['admin', 'supervisor']) && ! $record->trashed())
                     ->form([
                         TextArea::make('approved_note')
                             ->label('Catatan Approve')
