@@ -25,6 +25,8 @@ class DistributionItemTable
                     ->sortable(),
                 TextColumn::make('qty')
                     ->label('Jumlah')
+                    ->badge()
+                    ->color('info')
                     ->numeric(),
                 TextColumn::make('item.itemStock.unit')
                     ->label('Satuan'),

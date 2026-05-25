@@ -24,52 +24,52 @@ class ViewDistribution extends ViewRecord
                     ->label('Approve')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && auth()->user()->hasAnyRole(['admin', 'supervisor']) && ! $record->trashed())
+                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
+                    ->authorize('approval')
                     ->form([
                         TextArea::make('approved_note')
                             ->label('Catatan Approve')
                             ->required(),
                     ])
                     ->action(function ($record, $data) {
-                        $record->update([
-                            'approve_status' => 'approved',
-                            'approved_note' => $data['approved_note'],
-                        ]);
+                        $record->approve($data['approved_note']);
 
                         Notification::make()
                             ->title('Distribusi berhasil diapprove')
                             ->success()
                             ->send();
+
+                        $this->redirect(route('filament.admin.resources.distributions.view', $record));
                     }),
                 Action::make('reject')
                     ->label('Reject')
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && auth()->user()->hasAnyRole(['admin', 'supervisor']) && ! $record->trashed())
+                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
+                    ->authorize('approval')
                     ->form([
                         TextArea::make('approved_note')
                             ->label('Catatan Reject')
                             ->required(),
                     ])
                     ->action(function ($record, $data) {
-                        $record->update([
-                            'approve_status' => 'rejected',
-                            'approved_note' => $data['approved_note'],
-                        ]);
+                        $record->reject($data['approved_note']);
 
                         Notification::make()
                             ->title('Distribusi berhasil direject')
                             ->success()
                             ->send();
+
+                        $this->redirect(route('filament.admin.resources.distributions.view', $record));
                     }),
                 DeleteAction::make()
-                    ->visible(fn ($record) => ! $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                    ->visible(fn ($record) => ! $record->trashed())
                     ->icon('lucide-trash'),
                 ForceDeleteAction::make()
-                    ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                    ->visible(fn ($record) => $record->trashed())
                     ->icon('lucide-trash-2'),
                 RestoreAction::make()
-                    ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                    ->visible(fn ($record) => $record->trashed())
                     ->color('success')
                     ->icon('lucide-rotate-ccw'),
             ])

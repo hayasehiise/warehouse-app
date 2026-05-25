@@ -20,17 +20,4 @@ class ViewInventory extends ViewRecord
                 ->url(static::getResource()::getUrl('index')),
         ];
     }
-
-    protected function getListeners(): array
-    {
-        return [
-            'refreshView' => 'refreshRecord',
-        ];
-    }
-
-    public function refreshRecord()
-    {
-        $this->record = $this->record->fresh();
-        $this->fillForm();
-    }
 }

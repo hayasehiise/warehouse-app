@@ -14,7 +14,7 @@ class DistributionItemsRelationManager extends RelationManager
 
     public function isReadOnly(): bool
     {
-        return $this->ownerRecord->approve_status !== 'pending' || $this->ownerRecord->trashed();
+        return in_array($this->ownerRecord->approve_status, ['rejected', 'approved']) || $this->ownerRecord->trashed();
     }
 
     public function form(Schema $schema): Schema

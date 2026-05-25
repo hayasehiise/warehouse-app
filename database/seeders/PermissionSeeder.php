@@ -44,12 +44,27 @@ class PermissionSeeder extends Seeder
             'inventory-transaction.delete',
             'inventory-transaction.restore',
             'inventory-transaction.force-delete',
+            'inventory-transaction.approval',
 
             // CRUD Item Transaction permissions
             'item-transaction.create',
             'item-transaction.delete',
             'item-transaction.restore',
             'item-transaction.force-delete',
+
+            // Distribution permissions
+            'distribution.view',
+            'distribution.create',
+            'distribution.update',
+            'distribution.delete',
+            'distribution.restore',
+            'distribution.force-delete',
+            'distribution.approval',
+
+            // Distribution Item permissions
+            'distribution-item.view',
+            'distribution-item.create',
+            'distribution-item.delete',
         ];
         // Loop for initialize permissions
         foreach ($permissions as $permission) {

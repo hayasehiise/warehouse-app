@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Inventories\Tables;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\DatePicker;
@@ -15,17 +16,18 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Livewire\Component;
 
 class InventoryTransactionTable
 {
-    public static function configure(Table $table, Component $livewire): Table
+    public static function configure(Table $table): Table
     {
         return $table
             ->headerActions([
                 CreateAction::make()
-                    ->after(function () use ($livewire) {
-                        $livewire->dispatch('refreshView');
+                    ->after(function ($record) {
+                        return redirect(route('filament.admin.resources.inventories.view', [
+                            'record' => $record->item,
+                        ]));
                     }),
             ])
             ->columns([
@@ -107,14 +109,7 @@ class InventoryTransactionTable
                     ->sortable(),
                 TextColumn::make('approved_note')
                     ->label('Catatan Approval')
-                    ->formatStateUsing(function ($state, $record) {
-                        return match ($record->approve_status) {
-                            'PENDING' => 'Menunggu Approval',
-                            'REJECTED' => $state ?? 'Ditolak',
-                            'APPROVED' => $state ?? 'Disetujui',
-                            default => $state ?? '-',
-                        };
-                    })
+                    ->default('Menunggu Approval')
                     ->sortable(),
             ])
             ->filters([
@@ -182,7 +177,8 @@ class InventoryTransactionTable
                         ->label('Approve')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
-                        ->visible(fn ($record) => $record->approve_status === 'PENDING' && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                        ->visible(fn ($record) => $record->approve_status === 'PENDING')
+                        ->authorize('approval')
                         ->form([
                             TextArea::make('approved_note')
                                 ->label('Catatan Approval')
@@ -190,17 +186,19 @@ class InventoryTransactionTable
                                 ->required(),
                         ])
                         ->action(function ($record, $data) {
-                            $record->approve_status = 'APPROVED';
-                            $record->approved_by = auth()->id();
-                            $record->approved_note = $data['approved_note'];
-                            $record->save();
+                            $record->approve($data['approved_note']);
                         })
-                        ->after(fn () => $livewire->dispatch('refreshView')),
+                        ->after(function ($record) {
+                            return redirect(route('filament.admin.resources.inventories.view', [
+                                'record' => $record->item,
+                            ]));
+                        }),
                     Action::make('reject')
                         ->label('Reject')
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
-                        ->visible(fn ($record) => $record->approve_status === 'PENDING' && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                        ->visible(fn ($record) => $record->approve_status === 'PENDING')
+                        ->authorize('approval')
                         ->form([
                             TextArea::make('approved_note')
                                 ->label('Catatan Penolakan')
@@ -208,28 +206,40 @@ class InventoryTransactionTable
                                 ->required(),
                         ])
                         ->action(function ($record, $data) {
-                            $record->approve_status = 'REJECTED';
-                            $record->approved_by = auth()->id();
-                            $record->approved_note = $data['approved_note'];
-                            $record->save();
+                            $record->reject($data['approved_note']);
                         })
-                        ->after(fn () => $livewire->dispatch('refreshView')),
-                    Action::make('delete')
+                        ->after(function ($record) {
+                            return redirect(route('filament.admin.resources.inventories.view', [
+                                'record' => $record->item,
+                            ]));
+                        }),
+                    DeleteAction::make()
                         ->requiresConfirmation()
-                        ->visible(fn ($record) => auth()->user()->hasAnyRole(['admin', 'supervisor']) || (auth()->user()->hasRole('staff') && $record->approve_status === 'PENDING'))
-                        ->action(fn ($record) => $record->delete())
+                        ->visible(fn ($record) => $record->approve_status === 'PENDING' && ! $record->trashed())
                         ->color('danger')
                         ->icon('lucide-trash')
-                        ->after(fn () => $livewire->dispatch('refreshView')),
+                        ->after(function ($record) {
+                            return redirect(route('filament.admin.resources.inventories.view', [
+                                'record' => $record->item,
+                            ]));
+                        }),
                     RestoreAction::make()
-                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                        ->visible(fn ($record) => $record->trashed())
                         ->color('success')
                         ->icon('lucide-rotate-ccw')
-                        ->after(fn () => $livewire->dispatch('refreshView')),
+                        ->after(function ($record) {
+                            return redirect(route('filament.admin.resources.inventories.view', [
+                                'record' => $record->item,
+                            ]));
+                        }),
                     ForceDeleteAction::make()
                         ->requiresConfirmation()
-                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor']))
-                        ->after(fn () => $livewire->dispatch('refreshView')),
+                        ->visible(fn ($record) => $record->trashed())
+                        ->after(function ($record) {
+                            return redirect(route('filament.admin.resources.inventories.view', [
+                                'record' => $record->item,
+                            ]));
+                        }),
                 ]),
             ]);
     }

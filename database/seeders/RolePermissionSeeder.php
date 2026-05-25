@@ -49,6 +49,16 @@ class RolePermissionSeeder extends Seeder
             'item-transaction.delete',
             'item-transaction.restore',
             'item-transaction.force-delete',
+
+            'distribution.view',
+            'distribution.create',
+            'distribution.update',
+            'distribution.delete',
+            'distribution.approval',
+
+            'distribution-item.view',
+            'distribution-item.create',
+            'distribution-item.delete',
         ]);
 
         // staff permissions
@@ -68,6 +78,15 @@ class RolePermissionSeeder extends Seeder
 
             'item-transaction.create',
             'item-transaction.delete',
+
+            'distribution.view',
+            'distribution.create',
+            'distribution.update',
+            'distribution.delete',
+
+            'distribution-item.view',
+            'distribution-item.create',
+            'distribution-item.delete',
         ]);
     }
 }

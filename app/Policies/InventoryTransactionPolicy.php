@@ -62,4 +62,9 @@ class InventoryTransactionPolicy
     {
         return $user->can('inventory-transaction.force-delete');
     }
+
+    public function approval(User $user, InventoryTransaction $inventoryTransaction): bool
+    {
+        return $user->can('inventory-transaction.approval');
+    }
 }

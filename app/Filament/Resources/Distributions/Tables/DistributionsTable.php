@@ -11,9 +11,12 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class DistributionsTable
 {
@@ -55,17 +58,40 @@ class DistributionsTable
             ])
             ->filters([
                 TrashedFilter::make(),
+                Filter::make('approve_status')
+                    ->label('Status')
+                    ->form([
+                        Select::make('approve_status')
+                            ->label('Status')
+                            ->options([
+                                'pending' => 'Tertunda',
+                                'approved' => 'Disetujui',
+                                'rejected' => 'Ditolak',
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['approve_status'], fn (Builder $query, $status) => $query->where('approve_status', $status));
+                    })
+                    ->indicateUsing(function (array $data) {
+                        if ($data['approve_status']) {
+                            return match ($data['approve_status']) {
+                                'pending' => 'Tertunda',
+                                'approved' => 'Disetujui',
+                                'rejected' => 'Ditolak',
+                            };
+                        }
+                    }),
             ])
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make()
                         ->visible(fn ($record) => ! $record->trashed()),
                     DeleteAction::make()
-                        ->visible(fn ($record) => (in_array($record->approve_status, ['pending', 'rejected']) || auth()->user()->hasAnyRole(['admin', 'supervisor'])) && ! $record->trashed()),
+                        ->visible(fn ($record) => ! $record->trashed()),
                     RestoreAction::make()
-                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor'])),
+                        ->visible(fn ($record) => $record->trashed()),
                     ForceDeleteAction::make()
-                        ->visible(fn ($record) => $record->trashed() && auth()->user()->hasAnyRole(['admin', 'supervisor'])),
+                        ->visible(fn ($record) => $record->trashed()),
                 ])
                     ->icon('lucide-ellipsis-vertical')
                     ->tooltip('Tindakan'),
