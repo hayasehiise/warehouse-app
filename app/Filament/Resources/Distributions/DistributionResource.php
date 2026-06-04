@@ -33,6 +33,11 @@ class DistributionResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Transaksi Barang';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DistributionForm::configure($schema);

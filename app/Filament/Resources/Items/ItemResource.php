@@ -30,6 +30,11 @@ class ItemResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Data Barang';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ItemForm::configure($schema);

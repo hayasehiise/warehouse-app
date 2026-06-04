@@ -34,7 +34,7 @@ class ItemCategoryResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Data Master';
+        return 'Data Barang';
     }
 
     public static function form(Schema $schema): Schema

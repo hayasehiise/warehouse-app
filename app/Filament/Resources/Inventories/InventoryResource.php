@@ -30,6 +30,11 @@ class InventoryResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Transaksi Barang';
+    }
+
     public static function table(Table $table): Table
     {
         return InventoriesTable::configure($table)
