@@ -36,6 +36,10 @@ class InventoriesTable
                     ->label('Total Transaksi')
                     ->counts('inventoryTransactions')
                     ->badge(),
+                TextColumn::make('distribution_items_count')
+                    ->label('Total Distribusi')
+                    ->counts('distributionItems')
+                    ->badge(),
                 TextColumn::make('stock_status')
                     ->label('Status Stock')
                     ->state(function ($record) {
