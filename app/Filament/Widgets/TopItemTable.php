@@ -23,16 +23,18 @@ class TopItemTable extends TableWidget
         $startDate = $this->pageFilters['startDate'] ?? now()->startOfMonth();
         $endDate = $this->pageFilters['endDate'] ?? now()->endOfMonth();
 
+        $distributionFilter = function ($query) use ($startDate, $endDate) {
+            $query->whereHas('distribution', function ($q) use ($startDate, $endDate) {
+                $q->where('approve_status', 'approved')
+                    ->whereBetween('distribution_date', [$startDate, $endDate]);
+            });
+        };
+
         return $table
             ->query(fn (): Builder => Item::query()
-                ->whereHas('distributionItems')
+                ->whereHas('distributionItems', $distributionFilter)
                 ->withSum([
-                    'distributionItems as total_out' => function ($query) use ($startDate, $endDate) {
-                        $query->whereHas('distribution', function ($q) use ($startDate, $endDate) {
-                            $q->where('approve_status', 'approved')
-                                ->whereBetween('distribution_date', [$startDate, $endDate]);
-                        });
-                    },
+                    'distributionItems as total_out' => $distributionFilter,
                 ], 'qty')
                 ->orderByDesc('total_out')
                 ->limit(10)

@@ -19,10 +19,14 @@ class TopItemChart extends ChartWidget
         $startDate = $this->pageFilters['startDate'] ?? now()->startOfMonth();
         $endDate = $this->pageFilters['endDate'] ?? now()->endOfMonth();
 
+        $distributionFilter = function ($query) use ($startDate, $endDate) {
+            $query->whereHas('distribution', fn ($q) => $q->where('approve_status', 'approved')->whereBetween('distribution_date', [$startDate, $endDate]));
+        };
+
         $item = Item::query()
-            ->whereHas('distributionItems')
+            ->whereHas('distributionItems', $distributionFilter)
             ->withSum([
-                'distributionItems as sum_total_distribution' => fn ($query) => $query->whereHas('distribution', fn ($q) => $q->where('approve_status', 'approved')->whereBetween('distribution_date', [$startDate, $endDate])),
+                'distributionItems as sum_total_distribution' => $distributionFilter,
             ], 'qty')
             ->orderByDesc('sum_total_distribution')
             ->limit(10)
