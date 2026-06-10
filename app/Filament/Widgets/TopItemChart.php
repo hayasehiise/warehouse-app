@@ -4,17 +4,25 @@ namespace App\Filament\Widgets;
 
 use App\Models\Item;
 use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 class TopItemChart extends ChartWidget
 {
+    use InteractsWithPageFilters;
+
     protected ?string $heading = 'Top Item Chart';
+
+    protected ?string $description = 'Top 10 item berdasarkan data pengeluaran';
 
     protected function getData(): array
     {
+        $startDate = $this->pageFilters['startDate'] ?? now()->startOfMonth();
+        $endDate = $this->pageFilters['endDate'] ?? now()->endOfMonth();
+
         $item = Item::query()
             ->whereHas('distributionItems')
             ->withSum([
-                'distributionItems as sum_total_distribution' => fn ($query) => $query->whereHas('distribution', fn ($q) => $q->where('approve_status', 'approved')),
+                'distributionItems as sum_total_distribution' => fn ($query) => $query->whereHas('distribution', fn ($q) => $q->where('approve_status', 'approved')->whereBetween('distribution_date', [$startDate, $endDate])),
             ], 'qty')
             ->orderByDesc('sum_total_distribution')
             ->limit(10)
@@ -44,6 +52,18 @@ class TopItemChart extends ChartWidget
                 ],
             ],
             'labels' => $item->map(fn ($i) => $i->name),
+        ];
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'animation' => [
+                'y' => [
+                    'duration' => 500,
+                    'easing' => 'easeOutCubic',
+                ],
+            ],
         ];
     }
 
