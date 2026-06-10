@@ -39,9 +39,9 @@ class DistributionItemTable
                 CreateAction::make()
                     ->icon('lucide-plus')
                     ->label('Barang')
-                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Simpan')->icon('lucide-save'))
+                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Simpan')->color('primary')->icon('lucide-save'))
                     ->modalCancelAction(fn (Action $action): Action => $action->label('Kembali')->icon('lucide-arrow-left'))
-                    ->createAnotherAction(fn (Action $action): Action => $action->label('Simpan & Tambah')->icon('lucide-plus'))
+                    ->createAnotherAction(fn (Action $action): Action => $action->label('Simpan & Tambah')->color('primary')->icon('lucide-plus'))
                     ->before(function (array $data) use ($livewire) {
                         $exist = $livewire->ownerRecord->distributionItems()->where('item_id', $data['item_id'])->exists();
                         if ($exist) {
@@ -56,8 +56,17 @@ class DistributionItemTable
                     }),
             ])
             ->recordActions([
-                EditAction::make()->hidden(fn ($record) => $record->approve_status === 'approved'),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->hidden(fn ($record) => $record->approve_status === 'approved')
+                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Simpan')->color('primary')->icon('lucide-save'))
+                    ->modalCancelAction(fn (Action $action): Action => $action->label('Kembali')->icon('lucide-arrow-left')),
+                DeleteAction::make()
+                    ->modalHeading('Hapus Data')
+                    ->modalDescription(function ($record) {
+                        return 'Apakah anda yakin ingin menghapus '.$record->item->name.' (Jumlah: '.number_format($record->qty, 0, ',', '.').' '.$record->item->itemStock->unit.') dari list?';
+                    })
+                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Hapus')->color('danger')->icon('lucide-trash'))
+                    ->modalCancelAction(fn (Action $action): Action => $action->label('Kembali')->icon('lucide-arrow-left')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

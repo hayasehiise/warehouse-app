@@ -30,7 +30,7 @@ class DistributionsTable
                     ->sortable(),
                 TextColumn::make('distribution_date')
                     ->label('Tanggal Distribusi')
-                    ->date('d-m-Y')
+                    ->date('d/m/Y')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('recipient_name')
@@ -87,11 +87,12 @@ class DistributionsTable
                     ViewAction::make()
                         ->visible(fn ($record) => ! $record->trashed()),
                     DeleteAction::make()
-                        ->visible(fn ($record) => ! $record->trashed()),
+                        ->visible(fn ($record) => ! $record->trashed() && (auth()->id() == $record->created_by || auth()->user()->hasAnyRole(['admin', 'supervisor'])))
+                        ->modalDescription('Apakah anda yakin ingin menghapus data?'),
                     RestoreAction::make()
-                        ->visible(fn ($record) => $record->trashed()),
+                        ->visible(fn ($record) => $record->trashed() && (auth()->id() == $record->created_by || auth()->user()->hasAnyRole(['admin', 'supervisor']))),
                     ForceDeleteAction::make()
-                        ->visible(fn ($record) => $record->trashed()),
+                        ->visible(fn ($record) => $record->trashed() && (auth()->id() == $record->created_by || auth()->user()->hasAnyRole(['admin', 'supervisor']))),
                 ])
                     ->icon('lucide-ellipsis-vertical')
                     ->tooltip('Tindakan'),

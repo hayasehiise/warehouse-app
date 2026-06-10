@@ -82,18 +82,18 @@ class ViewDistribution extends ViewRecord
 
                         $this->redirect(route('filament.admin.resources.distributions.view', $record));
                     }),
-                DeleteAction::make()
-                    ->visible(fn ($record) => ! $record->trashed() && (auth()->id() == $record->created_by || auth()->user()->hasAnyRole(['admin', 'supervisor'])))
-                    ->icon('lucide-trash'),
-                ForceDeleteAction::make()
-                    ->visible(fn ($record) => $record->trashed())
-                    ->icon('lucide-trash-2'),
-                RestoreAction::make()
-                    ->visible(fn ($record) => $record->trashed())
-                    ->color('success')
-                    ->icon('lucide-rotate-ccw'),
-            ])
-                ->buttonGroup(),
+            ])->buttonGroup(),
+            DeleteAction::make()
+                ->visible(fn ($record) => ! $record->trashed() && (auth()->id() == $record->created_by || auth()->user()->hasAnyRole(['admin', 'supervisor'])))
+                ->modalDescription('Apakah anda yakin ingin menghapus data?')
+                ->icon('lucide-trash'),
+            ForceDeleteAction::make()
+                ->visible(fn ($record) => $record->trashed())
+                ->icon('lucide-trash-2'),
+            RestoreAction::make()
+                ->visible(fn ($record) => $record->trashed())
+                ->color('success')
+                ->icon('lucide-rotate-ccw'),
             Action::make('back')
                 ->label('Kembali')
                 ->color('gray')

@@ -24,6 +24,12 @@ class InventoryTransactionTable
         return $table
             ->headerActions([
                 CreateAction::make()
+                    ->label('Transaksi Gudang')
+                    ->icon('lucide-plus')
+                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Simpan')->icon('lucide-save'))
+                    ->modalCancelAction(fn (Action $action): Action => $action->label('Kembali')->icon('lucide-arrow-left'))
+                    ->createAnotherAction(fn (Action $action): Action => $action->label('Simpan & Tambah')->icon('lucide-plus'))
+                    ->modalHeading('Buat Transaksi Gudang')
                     ->after(function ($record) {
                         return redirect(route('filament.admin.resources.inventories.view', [
                             'record' => $record->item,
