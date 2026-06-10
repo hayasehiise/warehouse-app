@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Distributions\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -38,6 +39,9 @@ class DistributionItemTable
                 CreateAction::make()
                     ->icon('lucide-plus')
                     ->label('Barang')
+                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Simpan')->icon('lucide-save'))
+                    ->modalCancelAction(fn (Action $action): Action => $action->label('Kembali')->icon('lucide-arrow-left'))
+                    ->createAnotherAction(fn (Action $action): Action => $action->label('Simpan & Tambah')->icon('lucide-plus'))
                     ->before(function (array $data) use ($livewire) {
                         $exist = $livewire->ownerRecord->distributionItems()->where('item_id', $data['item_id'])->exists();
                         if ($exist) {

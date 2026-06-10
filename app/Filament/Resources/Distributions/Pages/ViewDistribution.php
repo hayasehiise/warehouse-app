@@ -24,7 +24,7 @@ class ViewDistribution extends ViewRecord
                     ->label('Approve')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed() && $record->distributionItems()->exists())
+                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
                     ->authorize('approval')
                     ->form([
                         TextArea::make('approved_note')
@@ -32,6 +32,16 @@ class ViewDistribution extends ViewRecord
                             ->required(),
                     ])
                     ->action(function ($record, $data) {
+                        if (! $record->distributionItems()->exists()) {
+                            Notification::make()
+                                ->title('Approve Ditolak')
+                                ->body('Anda harus menambahkan item distribusi sebelum melakukan approve')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
                         $record->approve($data['approved_note']);
 
                         Notification::make()
@@ -45,7 +55,7 @@ class ViewDistribution extends ViewRecord
                     ->label('Reject')
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed() && $record->distributionItems()->exists())
+                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
                     ->authorize('approval')
                     ->form([
                         TextArea::make('approved_note')
@@ -53,6 +63,16 @@ class ViewDistribution extends ViewRecord
                             ->required(),
                     ])
                     ->action(function ($record, $data) {
+                        if (! $record->distributionItems()->exists()) {
+                            Notification::make()
+                                ->title('Reject Ditolak')
+                                ->body('Anda harus menambahkan item distribusi sebelum melakukan reject')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
                         $record->reject($data['approved_note']);
 
                         Notification::make()
@@ -63,7 +83,7 @@ class ViewDistribution extends ViewRecord
                         $this->redirect(route('filament.admin.resources.distributions.view', $record));
                     }),
                 DeleteAction::make()
-                    ->visible(fn ($record) => ! $record->trashed())
+                    ->visible(fn ($record) => ! $record->trashed() && (auth()->id() == $record->created_by || auth()->user()->hasAnyRole(['admin', 'supervisor'])))
                     ->icon('lucide-trash'),
                 ForceDeleteAction::make()
                     ->visible(fn ($record) => $record->trashed())
