@@ -24,7 +24,7 @@ class ViewDistribution extends ViewRecord
                     ->label('Approve')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
+                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed() && $record->distributionItems()->exists())
                     ->authorize('approval')
                     ->form([
                         TextArea::make('approved_note')
@@ -45,7 +45,7 @@ class ViewDistribution extends ViewRecord
                     ->label('Reject')
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
+                    ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed() && $record->distributionItems()->exists())
                     ->authorize('approval')
                     ->form([
                         TextArea::make('approved_note')
