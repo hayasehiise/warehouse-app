@@ -48,6 +48,14 @@ class ItemCategoryPolicy
     }
 
     /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->can('item-category.delete');
+    }
+
+    /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user, ItemCategory $itemCategory): bool
@@ -56,9 +64,25 @@ class ItemCategoryPolicy
     }
 
     /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->can('item-category.restore');
+    }
+
+    /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user, ItemCategory $itemCategory): bool
+    {
+        return $user->can('item-category.force-delete');
+    }
+
+    /**
+     * Determine whether the user can force delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('item-category.force-delete');
     }

@@ -48,6 +48,14 @@ class DistributionPolicy
     }
 
     /**
+     * Determine whether the user can delete any the models
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->can('distribution.delete');
+    }
+
+    /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user, Distribution $distribution): bool
@@ -56,9 +64,25 @@ class DistributionPolicy
     }
 
     /**
+     * Determine whether the user can restore any the models
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->can('distribution.restore');
+    }
+
+    /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user, Distribution $distribution): bool
+    {
+        return $user->can('distribution.force-delete');
+    }
+
+    /**
+     * Determine whether the user can force delete any the models
+     */
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('distribution.force-delete');
     }
