@@ -40,17 +40,14 @@ class ItemCategoriesTable
                     ->tooltip('Edit')
                     ->size(Size::Large),
                 DeleteAction::make()
-                    ->hidden(fn ($record) => $record->trashed())
                     ->label('')
                     ->tooltip('Delete')
                     ->size(Size::Large),
                 RestoreAction::make()
-                    ->hidden(fn ($record) => ! $record->trashed())
                     ->label('')
                     ->tooltip('Restore')
                     ->size(Size::Large),
                 ForceDeleteAction::make()
-                    ->hidden(fn ($record) => ! $record->trashed())
                     ->label('')
                     ->tooltip('Delete Permanently')
                     ->size(Size::Large),
