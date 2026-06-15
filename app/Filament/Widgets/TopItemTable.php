@@ -14,6 +14,8 @@ class TopItemTable extends TableWidget
 {
     use InteractsWithPageFilters;
 
+    protected static ?string $pollingInterval = '5s';
+
     protected static ?string $heading = 'Top Item Table';
 
     protected static ?string $description = 'Top 10 item berdasarkan data pengeluaran';

@@ -10,6 +10,8 @@ class TopItemChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
+    protected ?string $pollingInterval = '5s';
+
     protected ?string $heading = 'Top Item Chart';
 
     protected ?string $description = 'Top 10 item berdasarkan data pengeluaran';
