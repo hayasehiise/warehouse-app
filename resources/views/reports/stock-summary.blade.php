@@ -254,7 +254,7 @@
                 <th width="42%" rowspan="2">JENIS BARANG</th>
                 <th width="18%" colspan="2">TOTAL STOCK<br>(JUMLAH)</th>
                 <th width="18%" colspan="2">TERDISTRIBUSI<br>(JUMLAH)</th>
-                <th width="9%" rowspan="2">SISA STOCK<br>(JUMLAH)</th>
+                <th width="9%" rowspan="2">STOCK TERSEDIA<br>(JUMLAH)</th>
                 <th width="9%" rowspan="2">KET</th>
             </tr>
             <tr>
