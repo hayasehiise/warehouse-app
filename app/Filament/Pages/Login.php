@@ -8,6 +8,8 @@ use Filament\Schemas\Schema;
 
 class Login extends AuthLogin
 {
+    protected string $view = 'filament.pages.login';
+
     protected function getCredentialsFromFormData(array $data): array
     {
         return [
