@@ -74,6 +74,7 @@ class Dashboard extends BaseDashboard
                             return [
                                 'item_name' => $item->name,
                                 'item_sku' => $item->sku,
+                                'item_unit' => $item->itemStock->unit,
                                 'category_name' => $item->itemCategory->name ?? 'No Category',
                                 'stock_total' => $totalStock,
                                 'stock_distributed' => (int) $distributed,
@@ -84,10 +85,16 @@ class Dashboard extends BaseDashboard
                     // generate PDF
                     $pdf = Pdf::loadView('reports.stock-summary', [
                         'reportData' => $items,
-                        'startDate' => $startCarbon->format('d/m/Y'),
-                        'endDate' => $endCarbon->format('d/m/Y'),
-                        'printedAt' => now()->format('d F Y, H:i:s'),
-                    ]);
+                        'startDate' => $startCarbon,
+                        'endDate' => $endCarbon,
+                        'approver' => 'PRASETYOHADI, S.T, S.H, S.H, M.H',
+                        'approver_nip' => '197804042002121003',
+                        'creator' => 'YANI YULIAWATI, S.Sos., M.M',
+                        'creator_nip' => '197607232006042002',
+                    ])
+                        ->setPaper('a4', 'potrait')
+                        ->setOption('isHtml5ParserEnabled', true)
+                        ->setOption('isRemoteEnabled', true);
 
                     // download PDF
                     return response()->streamDownload(fn () => print ($pdf->output()), 'Laporan-Stock-Summary-'.now()->format('Y-m-d').'.pdf');
