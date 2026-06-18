@@ -94,4 +94,12 @@ class DistributionPolicy
     {
         return $user->can('distribution.approval');
     }
+
+    /**
+     * Determine whether the user can approval any the models
+     */
+    public function approvalAny(User $user): bool
+    {
+        return $user->can('distribution.approval');
+    }
 }
