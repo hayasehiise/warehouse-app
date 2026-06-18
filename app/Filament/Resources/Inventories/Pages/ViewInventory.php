@@ -11,6 +11,8 @@ class ViewInventory extends ViewRecord
 {
     protected static string $resource = InventoryResource::class;
 
+    protected static ?string $title = 'Detail Inventaris';
+
     #[On('refreshInventory')]
     public function refreshInventory(): void
     {

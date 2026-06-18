@@ -13,6 +13,8 @@ class ViewinventoryDistribution extends ViewRecord
 {
     protected static string $resource = InventoryResource::class;
 
+    protected static ?string $title = 'Lihat Distribusi Stock';
+
     protected function getHeaderActions(): array
     {
         return [
