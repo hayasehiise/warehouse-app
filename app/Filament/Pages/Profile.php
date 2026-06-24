@@ -2,11 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
+use Livewire\Attributes\Url;
 
 class Profile extends Page
 {
@@ -15,6 +17,31 @@ class Profile extends Page
     protected static ?string $title = 'Profile';
 
     protected static bool $shouldRegisterNavigation = false;
+
+    public ?string $targetUserId = null;
+
+    #[Url]
+    public ?string $userId = null;
+
+    public function mount(): void
+    {
+        if ($this->userId !== null) {
+            abort_unless(auth()->user()->hasRole('admin'), 403);
+            $this->targetUserId = $this->userId;
+        } else {
+            $this->targetUserId = auth()->user()->userProfile->public_id;
+        }
+    }
+
+    private function getTargetUser(): User
+    {
+        return User::with('userProfile')->whereHas('userProfile', fn ($query) => $query->where('public_id', $this->targetUserId))->firstOrFail();
+    }
+
+    public static function getUserUrl(string $userId): string
+    {
+        return static::getUrl(['userId' => $userId]);
+    }
 
     protected function getHeaderActions(): array
     {
@@ -25,12 +52,13 @@ class Profile extends Page
 
     public function EditProfileAction(): Action
     {
-        $user = auth()->user();
+        $user = $this->getTargetUser();
 
         return Action::make('edit_profile')
             ->label('Edit Profile')
             ->icon('heroicon-o-pencil')
             ->color('primary')
+            ->visible(fn () => auth()->user()->hasRole('admin') || auth()->user()->id === $user->id)
             ->fillForm([
                 'userProfile' => [
                     'fullName' => $user->userProfile->fullName,
@@ -62,6 +90,7 @@ class Profile extends Page
                     ->title('Profile updated successfully')
                     ->success()
                     ->send();
+                $this->dispatch('profile-updated');
             });
     }
 }

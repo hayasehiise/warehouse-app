@@ -6,15 +6,35 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use App\Models\User;
 
 new class extends Component implements HasSchemas {
     use InteractsWithSchemas;
 
+    public ?User $user = null;
+    public ?string $publicId = null;
+
+    public function mount(?string $userId): void
+    {
+        $this->publicId = $userId;
+        $this->loadUser();
+    }
+
+    public function loadUser(): void
+    {
+        $this->user = User::with('userProfile')->whereHas('userProfile', fn($query) => $query->where('public_id', $this->publicId))->firstOrFail();
+    }
+
+    public function getListeners(): array
+    {
+        return [
+            'profile-updated' => 'loadUser',
+        ];
+    }
+
     public function profileInfo(Schema $schema): Schema
     {
-        $user = auth()->user();
-
-        return $schema->record($user)->components([
+        return $schema->record($this->user)->components([
             Section::make('Informasi Akun')
                 ->description('Informasi akun pengguna')
                 ->columns(2)
