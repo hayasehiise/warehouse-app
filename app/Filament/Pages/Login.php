@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use Filament\Auth\Pages\Login as AuthLogin;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\ValidationException;
 
 class Login extends AuthLogin
 {
@@ -29,5 +30,12 @@ class Login extends AuthLogin
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),
             ]);
+    }
+
+    protected function throwFailureValidationException(): never
+    {
+        throw ValidationException::withMessages([
+            'data.username' => __('auth.failed'),
+        ]);
     }
 }
