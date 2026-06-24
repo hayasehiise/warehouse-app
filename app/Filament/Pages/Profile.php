@@ -46,7 +46,8 @@ class Profile extends Page
                         TextInput::make('userProfile.fullName')
                             ->label('Nama Lengkap'),
                         TextInput::make('userProfile.employee_code')
-                            ->label('Kode Karyawan'),
+                            ->label('Kode Karyawan')
+                            ->mask('99999999 999999 9 999'),
                         TextInput::make('userProfile.employee_rank')
                             ->label('Pangkat'),
                         TextInput::make('userProfile.employee_position')
