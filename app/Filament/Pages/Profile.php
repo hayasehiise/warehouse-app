@@ -88,14 +88,15 @@ class Profile extends Page
                         TextInput::make('userProfile.fullName')
                             ->label('Nama Lengkap'),
                         TextInput::make('userProfile.employee_code')
-                            ->label('Kode Karyawan')
+                            ->label('NIP')
+                            ->maxLength(21)
                             ->mask('99999999 999999 9 999'),
                         TextInput::make('userProfile.employee_rank')
                             ->label('Pangkat'),
                         TextInput::make('userProfile.employee_position')
                             ->label('Jabatan'),
                         TextInput::make('userProfile.employee_group')
-                            ->label('Grup'),
+                            ->label('Golongan'),
                     ]),
             ])
             ->action(function ($data) use ($user) {

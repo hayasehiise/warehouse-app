@@ -42,7 +42,7 @@ new class extends Component implements HasSchemas {
             Section::make('Informasi Karyawan')
                 ->description('Informasi karyawan pengguna')
                 ->columns(2)
-                ->components([TextEntry::make('userProfile.fullName')->label('Nama Lengkap')->placeholder('-'), TextEntry::make('userProfile.employee_code')->label('Kode Karyawan')->placeholder('-'), TextEntry::make('userProfile.employee_rank')->label('Pangkat')->placeholder('-'), TextEntry::make('userProfile.employee_position')->label('Jabatan')->placeholder('-'), TextEntry::make('userProfile.employee_group')->label('Grup')->placeholder('-')]),
+                ->components([TextEntry::make('userProfile.fullName')->label('Nama Lengkap')->placeholder('-'), TextEntry::make('userProfile.employee_code')->label('NIP')->placeholder('-'), TextEntry::make('userProfile.employee_rank')->label('Pangkat')->placeholder('-'), TextEntry::make('userProfile.employee_position')->label('Jabatan')->placeholder('-'), TextEntry::make('userProfile.employee_group')->label('Golongan')->placeholder('-')]),
         ]);
     }
 };
