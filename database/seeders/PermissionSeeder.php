@@ -16,6 +16,7 @@ class PermissionSeeder extends Seeder
             // Page can access permissions
             'dashboard.view',
             'user.view',
+            'profile.view',
             'role.view',
             'item-category.view',
             'item.view',
@@ -24,6 +25,12 @@ class PermissionSeeder extends Seeder
             'inventory-transaction.deleted.view',
             'item-transaction.view',
             'item-transaction.deleted.view',
+
+            // CRUD User + update profile
+            'user.create',
+            'user.update',
+            'user.delete',
+            'profile.update',
 
             // CRUD Item Category permissions
             'item-category.create',

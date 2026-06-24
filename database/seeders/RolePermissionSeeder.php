@@ -25,6 +25,7 @@ class RolePermissionSeeder extends Seeder
         $supervisor->syncPermissions([
             // View Permissions
             'dashboard.view',
+            'profile.view',
             'item-category.view',
             'item.view',
             'item.deleted.view',
@@ -32,6 +33,9 @@ class RolePermissionSeeder extends Seeder
             'inventory-transaction.deleted.view',
             'item-transaction.view',
             'item-transaction.deleted.view',
+
+            // Update profile
+            'profile.update',
 
             // CRUD Permissions
             'item.create',
@@ -65,9 +69,13 @@ class RolePermissionSeeder extends Seeder
         $staff->syncPermissions([
             // View Permissions
             'dashboard.view',
+            'profile.view',
             'item.view',
             'inventory-transaction.view',
             'item-transaction.view',
+
+            // Update profile
+            'profile.update',
 
             // CRUD Permissions
             'item.create',

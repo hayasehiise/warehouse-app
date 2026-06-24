@@ -20,7 +20,7 @@ class UserPorfilePolicy
      */
     public function view(User $user, UserProfile $userProfile): bool
     {
-        return $user->id === $userProfile->user_id || $user->hasAnyRole(['admin']);
+        return ($user->id === $userProfile->user_id && $user->can('profile.view')) || $user->hasAnyRole(['admin']);
     }
 
     /**
@@ -36,7 +36,7 @@ class UserPorfilePolicy
      */
     public function update(User $user, UserProfile $userProfile): bool
     {
-        return $user->id === $userProfile->user_id || $user->hasAnyRole(['admin']);
+        return ($user->id === $userProfile->user_id && $user->can('profile.update')) || $user->hasAnyRole(['admin']);
     }
 
     /**
