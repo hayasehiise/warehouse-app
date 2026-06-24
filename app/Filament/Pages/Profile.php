@@ -26,7 +26,15 @@ class Profile extends Page
     public function mount(): void
     {
         if ($this->userId !== null) {
-            abort_unless(auth()->user()->hasRole('admin'), 403);
+            if (! auth()->user()->hasRole('admin')) {
+                Notification::make()
+                    ->title('Unauthorized')
+                    ->body('You are not authorized to view this profile')
+                    ->danger()
+                    ->send();
+
+                $this->redirect(static::getUrl());
+            }
             $this->targetUserId = $this->userId;
         } else {
             $this->targetUserId = auth()->user()->userProfile->public_id;
@@ -47,6 +55,12 @@ class Profile extends Page
     {
         return [
             $this->EditProfileAction(),
+            Action::make('back')
+                ->label('Kembali')
+                ->icon('heroicon-o-arrow-left')
+                ->color('gray')
+                ->url(fn () => url()->previous())
+                ->visible(fn () => $this->userId !== null),
         ];
     }
 
