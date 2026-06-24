@@ -89,8 +89,8 @@ class Dashboard extends BaseDashboard
                         'endDate' => $endCarbon,
                         'approver' => 'PRASETYOHADI, S.T, S.H, S.H, M.H',
                         'approver_nip' => '197804042002121003',
-                        'creator' => 'YANI YULIAWATI, S.Sos., M.M',
-                        'creator_nip' => '197607232006042002',
+                        'creator' => auth()->user()->userProfile->fullName ?? '.............................',
+                        'creator_nip' => auth()->user()->userProfile->employee_code ?? '.............................',
                     ])
                         ->setPaper('a4', 'potrait')
                         ->setOption('isHtml5ParserEnabled', true)

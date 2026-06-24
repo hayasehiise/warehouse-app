@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Login;
+use App\Filament\Pages\Profile;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -48,6 +50,13 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->favicon(asset('favicon.ico'))
+            ->brandName('Warehouse App') // can be remove if not needed
+            ->userMenuItems([
+                Action::make('profile')
+                    ->label('Profile')
+                    ->icon('lucide-user')
+                    ->url(fn (): string => Profile::getUrl()),
+            ])
             ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }
