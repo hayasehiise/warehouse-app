@@ -12,17 +12,15 @@ new class extends Component implements HasSchemas {
     use InteractsWithSchemas;
 
     public ?User $user = null;
-    public ?string $publicId = null;
 
-    public function mount(?string $userId): void
+    public function mount(): void
     {
-        $this->publicId = $userId;
         $this->loadUser();
     }
 
     public function loadUser(): void
     {
-        $this->user = User::with('userProfile')->whereHas('userProfile', fn($query) => $query->where('public_id', $this->publicId))->firstOrFail();
+        $this->user = auth()->user();
     }
 
     public function getListeners(): array

@@ -2,9 +2,6 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use App\Filament\Pages\Profile;
-use App\Models\User;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -50,12 +47,6 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
-                Action::make('profile_edit')
-                    ->label('Edit Profile')
-                    ->icon('lucide-user-pen')
-                    ->color('primary')
-                    ->hidden(fn (User $record): bool => $record->userProfile->public_id == auth()->user()->userProfile->public_id)
-                    ->url(fn (User $record): string => Profile::getUrl(['userId' => $record->userProfile->public_id])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
