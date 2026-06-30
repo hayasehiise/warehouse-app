@@ -35,7 +35,7 @@ class Login extends AuthLogin
     protected function throwFailureValidationException(): never
     {
         throw ValidationException::withMessages([
-            'data.username' => __('auth.failed'),
+            'data.username' => 'Username atau password salah.',
         ]);
     }
 }
