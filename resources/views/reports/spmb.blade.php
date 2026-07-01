@@ -1,4 +1,3 @@
-{{-- resources/views/reports/distribution-spmb.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
