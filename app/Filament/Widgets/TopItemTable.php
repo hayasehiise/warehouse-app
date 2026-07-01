@@ -20,6 +20,8 @@ class TopItemTable extends TableWidget
 
     protected static ?string $description = 'Top 10 item berdasarkan data pengeluaran';
 
+    protected static ?int $sort = 1;
+
     public function table(Table $table): Table
     {
         $startDate = $this->pageFilters['startDate'] ?? now()->startOfMonth();

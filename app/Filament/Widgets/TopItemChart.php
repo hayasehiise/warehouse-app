@@ -16,6 +16,8 @@ class TopItemChart extends ChartWidget
 
     protected ?string $description = 'Top 10 item berdasarkan data pengeluaran';
 
+    protected static ?int $sort = 3;
+
     protected function getData(): array
     {
         $startDate = $this->pageFilters['startDate'] ?? now()->startOfMonth();
