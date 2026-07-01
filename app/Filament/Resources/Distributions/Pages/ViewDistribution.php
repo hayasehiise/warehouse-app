@@ -11,6 +11,8 @@ use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\TextArea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use App\Models\Distribution;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ViewDistribution extends ViewRecord
 {
@@ -83,6 +85,24 @@ class ViewDistribution extends ViewRecord
                         $this->redirect(route('filament.admin.resources.distributions.view', $record));
                     }),
             ])->buttonGroup(),
+            Action::make('print_spmb')
+                    ->label('Print SPMB')
+                    ->color('primary')
+                    ->icon('lucide-printer')
+                    ->visible(fn ($record) => ! $record->trashed() && $record->approve_status === 'approved')
+                    ->action(function (Distribution $record) {
+                        $record->load(['distributionItems', 'distributionItems.item.itemCategory', 'approvedBy', 'createdBy', 'createdBy.userProfile', 'approvedBy.userProfile']);
+
+                        $pdf = Pdf::loadView('reports.spmb', [
+                            'distribution' => $record,
+                            'koordinator_name' => 'YANI YULIAWATI, S.Sos., M.M',
+                            'kuasa_name' => 'HASTUTY, S.E, M.M'
+                        ])
+                        ->setPaper('a4', 'portrait')
+                        ->setOption('isHtml5ParserEnabled', true)
+                        ->setOption('isRemoteEnabled', true);
+                        return response()->streamDownload(fn () => print($pdf->output()), 'SPMB-'. $record->distribution_code .'.pdf');
+                    }),
             DeleteAction::make()
                 ->visible(fn ($record) => ! $record->trashed() && (auth()->id() == $record->created_by || auth()->user()->hasAnyRole(['admin', 'supervisor'])))
                 ->modalDescription('Apakah anda yakin ingin menghapus data?')
