@@ -34,6 +34,31 @@ class LowStockItemTable extends TableWidget
                     ->label('Kategori'),
                 TextColumn::make('itemStock.quantity')
                     ->label('Total Stock'),
+                TextColumn::make('stock_status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(function ($record) {
+                        $stock = $record->itemStock->quantity;
+                        if ($stock <= 0) {
+                            return 'danger';
+                        }
+                        if ($stock <= 10) {
+                            return 'warning';
+                        }
+
+                        return 'success';
+                    })
+                    ->state(function ($record) {
+                        $stock = $record->itemStock->quantity;
+                        if ($stock <= 0) {
+                            return 'Stock Habis';
+                        }
+                        if ($stock <= 10) {
+                            return 'Stock Rendah';
+                        }
+
+                        return 'Stock Tersedia';
+                    }),
             ])
             ->filters([
                 //
