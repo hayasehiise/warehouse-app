@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Items\Schemas;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -31,8 +31,9 @@ class ItemForm
                         $component->state($record?->itemStock->unit ?? '');
                     })
                     ->required(),
-                TextArea::make('description')
-                    ->label('Description'),
+                Textarea::make('description')
+                    ->label('Description')
+                    ->rows(2),
             ]);
     }
 }

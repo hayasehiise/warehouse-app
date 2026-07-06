@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\ItemCategories\Schemas;
 
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -15,7 +15,7 @@ class ItemCategoryForm
                 TextInput::make('name')
                     ->label('Category Name')
                     ->required(),
-                TextArea::make('description')
+                Textarea::make('description')
                     ->label('Description')
                     ->nullable(),
             ]);
