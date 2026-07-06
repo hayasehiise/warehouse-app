@@ -17,9 +17,9 @@ class CreateItemCategory extends CreateRecord
     protected function getFormActions(): array
     {
         return [
-            $this->getCreateFormAction()->label('Save'),
-            $this->getCreateAnotherFormAction()->label('Save & Create Another'),
-            $this->getCancelFormAction()->label('Cancel'),
+            $this->getCreateFormAction()->label('Save')->color('primary')->icon('lucide-save'),
+            $this->getCreateAnotherFormAction()->label('Save & Create Another')->color('primary')->icon('lucide-plus'),
+            $this->getCancelFormAction()->label('Cancel')->icon('lucide-x'),
         ];
     }
 }

@@ -4,11 +4,12 @@ namespace App\Filament\Resources\Inventories;
 
 use App\Filament\Resources\Inventories\Pages\ListInventories;
 use App\Filament\Resources\Inventories\Pages\ViewInventory;
+use App\Filament\Resources\Inventories\Pages\ViewinventoryDistribution;
 use App\Filament\Resources\Inventories\RelationManagers\InventoryTransactionsRelationManager;
+use App\Filament\Resources\Inventories\Schemas\ItemInfolist;
 use App\Filament\Resources\Inventories\Tables\InventoriesTable;
 use App\Models\Item;
 use BackedEnum;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -27,7 +28,12 @@ class InventoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Transaksi Gudang';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Transaksi Barang';
+    }
 
     public static function table(Table $table): Table
     {
@@ -49,6 +55,7 @@ class InventoryResource extends Resource
         return [
             'index' => ListInventories::route('/'),
             'view' => ViewInventory::route('/{record}'),
+            'distribution' => ViewinventoryDistribution::route('/{record}/distribution'),
         ];
     }
 
@@ -62,15 +69,6 @@ class InventoryResource extends Resource
 
     public static function infolist(Schema $schema): Schema
     {
-        return $schema
-            ->schema([
-                TextEntry::make('name')->label('Nama Barang'),
-                TextEntry::make('sku')->label('SKU'),
-                TextEntry::make('itemCategory.name')->label('Kategori'),
-                TextEntry::make('itemStock.quantity')
-                    ->label('Quantity')
-                    ->badge(),
-                TextEntry::make('itemStock.unit')->label('Unit'),
-            ]);
+        return ItemInfolist::configure($schema);
     }
 }

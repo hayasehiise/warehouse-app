@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Distributions;
 use App\Filament\Resources\Distributions\Pages\CreateDistribution;
 use App\Filament\Resources\Distributions\Pages\ListDistributions;
 use App\Filament\Resources\Distributions\Pages\ViewDistribution;
+use App\Filament\Resources\Distributions\RelationManagers\DistributionItemsRelationManager;
 use App\Filament\Resources\Distributions\Schemas\DistributionForm;
 use App\Filament\Resources\Distributions\Schemas\DistributionInfolist;
 use App\Filament\Resources\Distributions\Tables\DistributionsTable;
@@ -12,7 +13,6 @@ use App\Models\Distribution;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -21,7 +21,7 @@ class DistributionResource extends Resource
 {
     protected static ?string $model = Distribution::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'lucide-hand-helping';
 
     protected static ?string $recordTitleAttribute = 'distribution_code';
 
@@ -30,6 +30,13 @@ class DistributionResource extends Resource
     protected static ?string $modelLabel = 'Pengeluaran Barang';
 
     protected static ?string $pluralModelLabel = 'Pengeluaran Barang';
+
+    protected static ?int $navigationSort = 5;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Transaksi Barang';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -49,7 +56,7 @@ class DistributionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DistributionItemsRelationManager::class,
         ];
     }
 

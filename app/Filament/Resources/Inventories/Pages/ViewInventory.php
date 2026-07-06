@@ -5,10 +5,21 @@ namespace App\Filament\Resources\Inventories\Pages;
 use App\Filament\Resources\Inventories\InventoryResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
+use Livewire\Attributes\On;
 
 class ViewInventory extends ViewRecord
 {
     protected static string $resource = InventoryResource::class;
+
+    protected static ?string $title = 'Detail Inventaris';
+
+    #[On('refreshInventory')]
+    public function refreshInventory(): void
+    {
+        $this->record->refresh();
+
+        $this->dispatch('$refresh');
+    }
 
     protected function getHeaderActions(): array
     {
@@ -19,18 +30,5 @@ class ViewInventory extends ViewRecord
                 ->color('gray')
                 ->url(static::getResource()::getUrl('index')),
         ];
-    }
-
-    protected function getListeners(): array
-    {
-        return [
-            'refreshView' => 'refreshRecord',
-        ];
-    }
-
-    public function refreshRecord()
-    {
-        $this->record = $this->record->fresh();
-        $this->fillForm();
     }
 }

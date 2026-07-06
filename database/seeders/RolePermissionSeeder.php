@@ -25,6 +25,7 @@ class RolePermissionSeeder extends Seeder
         $supervisor->syncPermissions([
             // View Permissions
             'dashboard.view',
+            'profile.view',
             'item-category.view',
             'item.view',
             'item.deleted.view',
@@ -32,6 +33,9 @@ class RolePermissionSeeder extends Seeder
             'inventory-transaction.deleted.view',
             'item-transaction.view',
             'item-transaction.deleted.view',
+
+            // Update profile
+            'profile.update',
 
             // CRUD Permissions
             'item.create',
@@ -49,15 +53,29 @@ class RolePermissionSeeder extends Seeder
             'item-transaction.delete',
             'item-transaction.restore',
             'item-transaction.force-delete',
+
+            'distribution.view',
+            'distribution.create',
+            'distribution.update',
+            'distribution.delete',
+            'distribution.approval',
+
+            'distribution-item.view',
+            'distribution-item.create',
+            'distribution-item.delete',
         ]);
 
         // staff permissions
         $staff->syncPermissions([
             // View Permissions
             'dashboard.view',
+            'profile.view',
             'item.view',
             'inventory-transaction.view',
             'item-transaction.view',
+
+            // Update profile
+            'profile.update',
 
             // CRUD Permissions
             'item.create',
@@ -68,6 +86,15 @@ class RolePermissionSeeder extends Seeder
 
             'item-transaction.create',
             'item-transaction.delete',
+
+            'distribution.view',
+            'distribution.create',
+            'distribution.update',
+            'distribution.delete',
+
+            'distribution-item.view',
+            'distribution-item.create',
+            'distribution-item.delete',
         ]);
     }
 }

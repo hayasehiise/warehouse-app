@@ -48,6 +48,14 @@ class ItemPolicy
     }
 
     /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->can('item.delete');
+    }
+
+    /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user, Item $item): bool
@@ -56,9 +64,25 @@ class ItemPolicy
     }
 
     /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->can('item.restore');
+    }
+
+    /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user, Item $item): bool
+    {
+        return $user->can('item.force-delete');
+    }
+
+    /**
+     * Determine whether the user can force delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('item.force-delete');
     }

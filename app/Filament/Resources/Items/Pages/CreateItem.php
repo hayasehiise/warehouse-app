@@ -17,9 +17,9 @@ class CreateItem extends CreateRecord
     protected function getFormActions(): array
     {
         return [
-            $this->getCreateFormAction()->label('Save'),
-            $this->getCreateAnotherFormAction()->label('Save & Create Another'),
-            $this->getCancelFormAction()->label('Cancel'),
+            $this->getCreateFormAction()->label('Simpan')->icon('lucide-save'),
+            $this->getCreateAnotherFormAction()->label('Simpan & Buat Baru')->icon('lucide-plus')->color('primary'),
+            $this->getCancelFormAction()->label('Batal')->icon('lucide-x'),
         ];
     }
 

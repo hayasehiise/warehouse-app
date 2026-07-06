@@ -28,4 +28,12 @@ class EditItemCategory extends EditRecord
     {
         return static::getResource()::getUrl('index');
     }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getSubmitFormAction()->label('Simpan')->color('primary')->icon('lucide-save'),
+            $this->getCancelFormAction()->label('Kembali')->icon('lucide-arrow-left'),
+        ];
+    }
 }

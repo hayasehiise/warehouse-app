@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Inventories\Tables;
 
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -34,6 +36,10 @@ class InventoriesTable
                     ->label('Total Transaksi')
                     ->counts('inventoryTransactions')
                     ->badge(),
+                TextColumn::make('distribution_items_count')
+                    ->label('Total Distribusi')
+                    ->counts('distributionItems')
+                    ->badge(),
                 TextColumn::make('stock_status')
                     ->label('Status Stock')
                     ->state(function ($record) {
@@ -60,6 +66,13 @@ class InventoriesTable
                         return 'success';
                     })
                     ->sortable(),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                Action::make('distribution')
+                    ->label('Distribusi')
+                    ->icon('lucide-arrow-up-right')
+                    ->url(fn ($record) => route('filament.admin.resources.inventories.distribution', $record)),
             ]);
     }
 }

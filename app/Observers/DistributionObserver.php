@@ -51,17 +51,8 @@ class DistributionObserver
         $newCode = ($lastDistribution?->id ?? 0) + 1;
         $distribution->distribution_code = 'DIST-'.now()->format('Ymd').'-'.str_pad($newCode, 5, '0', STR_PAD_LEFT);
 
-        /**
-         * Auto Approval
-         */
-        if ($user->hasAnyRole(['admin', 'supervisor'])) {
-            $distribution->approve_status = 'approved';
-            $distribution->approved_by = $user->id;
-            $distribution->approved_at = now();
-            $distribution->approved_note = 'Auto Approved';
-        } else {
-            $distribution->approve_status = 'pending';
-        }
+        // pending approval
+        $distribution->approve_status = 'pending';
     }
 
     /**

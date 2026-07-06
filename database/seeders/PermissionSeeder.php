@@ -16,6 +16,7 @@ class PermissionSeeder extends Seeder
             // Page can access permissions
             'dashboard.view',
             'user.view',
+            'profile.view',
             'role.view',
             'item-category.view',
             'item.view',
@@ -24,6 +25,12 @@ class PermissionSeeder extends Seeder
             'inventory-transaction.deleted.view',
             'item-transaction.view',
             'item-transaction.deleted.view',
+
+            // CRUD User + update profile
+            'user.create',
+            'user.update',
+            'user.delete',
+            'profile.update',
 
             // CRUD Item Category permissions
             'item-category.create',
@@ -44,12 +51,27 @@ class PermissionSeeder extends Seeder
             'inventory-transaction.delete',
             'inventory-transaction.restore',
             'inventory-transaction.force-delete',
+            'inventory-transaction.approval',
 
             // CRUD Item Transaction permissions
             'item-transaction.create',
             'item-transaction.delete',
             'item-transaction.restore',
             'item-transaction.force-delete',
+
+            // Distribution permissions
+            'distribution.view',
+            'distribution.create',
+            'distribution.update',
+            'distribution.delete',
+            'distribution.restore',
+            'distribution.force-delete',
+            'distribution.approval',
+
+            // Distribution Item permissions
+            'distribution-item.view',
+            'distribution-item.create',
+            'distribution-item.delete',
         ];
         // Loop for initialize permissions
         foreach ($permissions as $permission) {

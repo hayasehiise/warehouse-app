@@ -28,13 +28,13 @@ class ItemCategoryResource extends Resource
 
     protected static ?string $modelLabel = 'Kategori Barang';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Kategori Barang';
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Data Master';
+        return 'Data Barang';
     }
 
     public static function form(Schema $schema): Schema

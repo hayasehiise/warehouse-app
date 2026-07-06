@@ -15,9 +15,20 @@ class EditItem extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
-            ForceDeleteAction::make(),
-            RestoreAction::make(),
+            DeleteAction::make()
+                ->icon('lucide-trash'),
+            ForceDeleteAction::make()
+                ->icon('lucide-trash-2'),
+            RestoreAction::make()
+                ->icon('lucide-rotate-ccw'),
+        ];
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getSaveFormAction()->label('Simpan')->icon('lucide-save'),
+            $this->getCancelFormAction()->label('Batal')->icon('lucide-x'),
         ];
     }
 

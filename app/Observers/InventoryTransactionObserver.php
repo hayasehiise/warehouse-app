@@ -32,15 +32,7 @@ class InventoryTransactionObserver
         $user = auth()->user();
 
         $inventoryTransaction->created_by = $user->id;
-        if ($user?->hasAnyRole([
-            'admin',
-            'supervisor',
-        ])) {
-            $inventoryTransaction->approved_by = $user->id;
-            $inventoryTransaction->approve_status = 'APPROVED';
-        } else {
-            $inventoryTransaction->approve_status = 'PENDING';
-        }
+        $inventoryTransaction->approve_status = 'PENDING';
     }
 
     /**

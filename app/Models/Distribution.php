@@ -2,14 +2,21 @@
 
 namespace App\Models;
 
+use App\Observers\DistributionObserver;
+use App\Policies\DistributionPolicy;
+use Exception;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Policy;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[Policy(DistributionPolicy::class)]
+#[ObservedBy([DistributionObserver::class])]
 #[Fillable([
     'public_id',
     'distribution_code',
@@ -30,6 +37,30 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Distribution extends Model
 {
     use HasUlids, SoftDeletes;
+
+    // Approve Distribution
+    public function approve(string $note): void
+    {
+        if ($this->approve_status !== 'pending') {
+            throw new Exception('Tidak bisa approval distribusi yang sudah diapprove atau direject');
+        }
+        $this->approve_status = 'approved';
+        $this->approved_by = auth()->id();
+        $this->approved_note = $note;
+        $this->save();
+    }
+
+    // Reject Distribution
+    public function reject(string $note): void
+    {
+        if ($this->approve_status !== 'pending') {
+            throw new Exception('Tidak bisa menolak distribusi yang sudah diapprove atau direject');
+        }
+        $this->approve_status = 'rejected';
+        $this->approved_by = auth()->id();
+        $this->approved_note = $note;
+        $this->save();
+    }
 
     public function uniqueIds()
     {
@@ -53,6 +84,6 @@ class Distribution extends Model
 
     public function distributionItems(): HasMany
     {
-        return $this->hasMany(DistributionItem::class);
+        return $this->hasMany(DistributionItems::class);
     }
 }

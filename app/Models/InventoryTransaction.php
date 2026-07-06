@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Observers\InventoryTransactionObserver;
 use App\Policies\InventoryTransactionPolicy;
+use Exception;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -33,6 +34,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class InventoryTransaction extends Model
 {
     use HasUlids, SoftDeletes;
+
+    public function approve(string $note): void
+    {
+        if ($this->approve_status !== 'PENDING') {
+            throw new Exception('Tidak Bisa Approval');
+        }
+        $this->approve_status = 'APPROVED';
+        $this->approved_by = auth()->id();
+        $this->approved_note = $note;
+        $this->save();
+    }
+
+    public function reject(string $note): void
+    {
+        if ($this->approve_status !== 'PENDING') {
+            throw new Exception('Tidak Bisa Reject');
+        }
+        $this->approve_status = 'REJECTED';
+        $this->approved_by = auth()->id();
+        $this->approved_note = $note;
+        $this->save();
+    }
 
     public function uniqueIds(): array
     {
