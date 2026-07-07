@@ -1,5 +1,5 @@
 <x-filament-panels::page>
     {{-- Page content --}}
     {{-- Infolist --}}
-    @livewire('⚡profile-infolist')
+    @livewire('profile-infolist')
 </x-filament-panels::page>
