@@ -10,7 +10,7 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -182,7 +182,7 @@ class InventoryTransactionTable
                         ->visible(fn ($record) => $record->approve_status === 'PENDING' && ! $record->trashed())
                         ->authorize('approval')
                         ->form([
-                            TextArea::make('approved_note')
+                            Textarea::make('approved_note')
                                 ->label('Catatan Approval')
                                 ->rows(2)
                                 ->required(),
@@ -198,7 +198,7 @@ class InventoryTransactionTable
                         ->visible(fn ($record) => $record->approve_status === 'PENDING' && ! $record->trashed())
                         ->authorize('approval')
                         ->form([
-                            TextArea::make('approved_note')
+                            Textarea::make('approved_note')
                                 ->label('Catatan Penolakan')
                                 ->rows(2)
                                 ->required(),

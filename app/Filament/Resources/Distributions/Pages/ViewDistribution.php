@@ -8,7 +8,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use App\Models\Distribution;
@@ -29,7 +29,7 @@ class ViewDistribution extends ViewRecord
                     ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
                     ->authorize('approval')
                     ->form([
-                        TextArea::make('approved_note')
+                        Textarea::make('approved_note')
                             ->label('Catatan Approve')
                             ->required(),
                     ])
@@ -60,7 +60,7 @@ class ViewDistribution extends ViewRecord
                     ->visible(fn ($record) => in_array($record->approve_status, ['pending']) && ! $record->trashed())
                     ->authorize('approval')
                     ->form([
-                        TextArea::make('approved_note')
+                        Textarea::make('approved_note')
                             ->label('Catatan Reject')
                             ->required(),
                     ])
